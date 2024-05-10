@@ -1,6 +1,7 @@
 #!/bin/python3
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 def DCT(block , m):
     dctImg = cv2.dct(np.float32(block))
@@ -37,3 +38,21 @@ if __name__ == "__main__":
         for j in  range(8-m):
             print(f"{ifreqarr[i][j]} ", end="")
         print() 
+
+    #displaying PSNR graph
+
+    m = [1, 2, 3, 4]
+    PSRN = [1, 2, 3, 4]     #modify this
+
+    plt.plot(m, PSRN, marker='o')
+
+    plt.xlabel('m')
+    plt.ylabel('PSNR')
+    plt.title('m vs PSNR curve')
+    
+    plt.savefig('m vs PSNR.png')
+
+    # Displaying the plot
+    plt.show()
+    
+
