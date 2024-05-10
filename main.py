@@ -44,7 +44,9 @@ def main(image, length, width, PSNR_array, m):
                 np.clip(decompressedBlock, 0, 255, out=decompressedBlock)
                 decompressedImage[i:i+8, j:j+8, color] = decompressedBlock
 
-    PSNR_array.append(cv2.PSNR(image, decompressedImage))
+    val = cv2.PSNR(image, decompressedImage)
+    PSNR_array.append(val)
+    print(val)
     cv2.imwrite(f"compressed{m}.png", compressedImage)
     cv2.imwrite(f"decompressed{m}.png", decompressedImage)
 
