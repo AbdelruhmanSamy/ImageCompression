@@ -1,25 +1,32 @@
 #!/bin/env python3
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.fft import dctn, idctn
 
 
+def printGraph(PSNR_array):
+    plt.plot(range(1, 5), PSNR_array, marker='o')
+    plt.xlabel('m')
+    plt.ylabel('PSNR')
+    plt.title('m vs PSNR curve')
+    plt.savefig('m_vs_PSNR.png')
+    plt.show()
+
+
 def getInput():
-    """Get the input image and split it into its RGB channels."""
     imageName = input("Enter the name of the image file: ")
-    m = int(input("Enter value of m: "))
-
+    if imageName == "":
+        imageName = "image.png"
     image = cv2.imread(imageName)
+    for color in range(3):
+        coloredImage = np.zeros_like(image)
+        coloredImage[:, :, color] = image[:, :, color]
+        cv2.imwrite(f"color{color}.png", coloredImage)
+    return image
 
-    return image, m
 
-
-def main():
-    """Execute the program."""
-    image, m = getInput()
-    length = image.shape[0]
-    width = image.shape[1]
-
+def main(image, length, width, PSNR_array, m):
     # Initialize the compressed and decompressed images
     compressedImage = np.zeros_like(image)
     decompressedImage = np.zeros_like(image)
@@ -37,9 +44,16 @@ def main():
                 np.clip(decompressedBlock, 0, 255, out=decompressedBlock)
                 decompressedImage[i:i+8, j:j+8, color] = decompressedBlock
 
-    cv2.imwrite("compressed.png", compressedImage)
-    cv2.imwrite("decompressed.png", decompressedImage)
+    PSNR_array.append(cv2.PSNR(image, decompressedImage))
+    cv2.imwrite(f"compressed{m}.png", compressedImage)
+    cv2.imwrite(f"decompressed{m}.png", decompressedImage)
 
 
 if __name__ == "__main__":
-    main()
+    PSNR_array = []
+    image = getInput()
+    length = image.shape[0]
+    width = image.shape[1]
+    for m in range(1, 5):
+        main(image, length, width, PSNR_array, m)
+    printGraph(PSNR_array)
