@@ -11,6 +11,14 @@ def iDCT(retainedCoeff ,  m):
     pad_size = 8 - m
     padded_array = np.pad(retainedCoeff, ((0, pad_size), (0, pad_size)), 'constant')
     imatrix = cv2.idct(np.float32(padded_array))
+   
+    for i in range(m):
+        for j in range(m):
+            if(imatrix[i][j]>255):
+                imatrix[i][j] = 255
+            elif(imatrix[i][j]<0):
+                imatrix[i][j] = 0
+                
     return imatrix
     
 if __name__ == "__main__":
